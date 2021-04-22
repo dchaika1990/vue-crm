@@ -5,7 +5,7 @@
 				<a href="#" @click.prevent="$emit('nav-click')">
 					<i class="material-icons black-text">dehaze</i>
 				</a>
-				<span class="black-text">12.12.12</span>
+				<span class="black-text">{{date | date('datetime')}}</span>
 			</div>
 
 			<ul class="right hide-on-small-and-down">
@@ -42,16 +42,29 @@
 <script>
 export default {
 	name: "Navbar",
+	data: () => ({
+		date: new Date(),
+		interval: null,
+		dropdown: null
+	}),
 	methods: {
 		logout(){
-			console.log('logout')
 			this.$router.push('/login?message=logout');
 		}
 	},
 	mounted(){
-		M.Dropdown.init(this.$refs.dropdown, {
+		this.interval = setInterval(()=> {
+			this.date = new Date()
+		}, 1000)
+		this.dropdown = M.Dropdown.init(this.$refs.dropdown, {
 			constrainWidth: false
 		})
+	},
+	beforeDestroy() {
+		clearInterval(this.interval);
+		if (this.dropdown && this.dropdown.destroy) {
+			this.dropdown.destroy()
+		}
 	}
 }
 </script>
