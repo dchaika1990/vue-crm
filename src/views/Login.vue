@@ -36,7 +36,8 @@
 				<small
 					class="helper-text invalid"
 					v-else-if="$v.password.$dirty && !$v.password.minLength"
-				>Пароль должен быть длинее {{$v.password.$params.minLength.min}} символов. Сейчас он {{password.length}}</small>
+				>Пароль должен быть длинее {{ $v.password.$params.minLength.min }} символов. Сейчас он
+					{{ password.length }}</small>
 			</div>
 		</div>
 		<div class="card-action">
@@ -74,12 +75,12 @@ export default {
 	},
 	mounted() {
 		console.log(this.$route)
-		if (messages[this.$route.query.message]){
+		if (messages[this.$route.query.message]) {
 			this.$message(messages[this.$route.query.message])
 		}
 	},
 	methods: {
-		submitHandler() {
+		async submitHandler() {
 			if (this.$v.$invalid) {
 				this.$v.$touch()
 				return
@@ -88,8 +89,10 @@ export default {
 				email: this.email,
 				password: this.password
 			}
-			console.log(formData)
-			this.$router.push('/')
+			try {
+				await this.$store.dispatch('login', formData)
+				this.$router.push('/')
+			} catch (e) {}
 		}
 	}
 }
